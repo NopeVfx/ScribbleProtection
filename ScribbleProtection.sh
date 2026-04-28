@@ -25,10 +25,9 @@ confirm() {
     [ "$_a" = "y" ] || [ "$_a" = "Y" ]
 }
 
-if [ "$(id -u)" -ne 0 ]; then
-    printf "${Y}not running as root - privileged commands (gsctool/crossystem) will fail.${RST}\n"
-    printf "${DIM}continuing anyway so you can browse the walkthrough.${RST}\n"
-    sleep 1
+if [ "$EUID" -ne 0 ]; then
+    err "Please run as root!"
+    exit 1
 fi
 
 # Arrow-key menu helper
