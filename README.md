@@ -1,5 +1,5 @@
 # ScribbleProtection
 
-Use .sh for ChromeOS
+ On a real Chrome OS device with CR50/TI50, run sudo bash ScribbleProtection.sh
 
-Use .postix.sh for iSH and Termux testing
+
