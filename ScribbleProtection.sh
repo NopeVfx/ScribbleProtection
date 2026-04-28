@@ -1,7 +1,7 @@
 #!/bin/bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-# Colors and status helpers
+# ASCII Art
 R=$'\033[1;31m'
 G=$'\033[1;32m'
 Y=$'\033[1;33m'
@@ -25,7 +25,11 @@ confirm() {
     [ "$_a" = "y" ] || [ "$_a" = "Y" ]
 }
 
-[ "$(id -u)" -ne 0 ] && { printf "${R}must be run as root${RST}\n"; exit 1; }
+if [ "$(id -u)" -ne 0 ]; then
+    printf "${Y}not running as root - privileged commands (gsctool/crossystem) will fail.${RST}\n"
+    printf "${DIM}continuing anyway so you can browse the walkthrough.${RST}\n"
+    sleep 1
+fi
 
 # Arrow-key menu helper
 arrow_menu() {
