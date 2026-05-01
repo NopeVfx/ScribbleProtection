@@ -94,9 +94,14 @@ numeric_menu() {
 detect_gsc() {
     _r="unknown"
     if command -v gsctool >/dev/null 2>&1; then
-        _o=$(gsctool -a -v 2>/dev/null)
-        if echo "$_o" | grep -qiE 'ti50|dauntless|0\.2\.'; then _r="ti50"; fi
-        if echo "$_o" | grep -qiE 'cr50|h1|0\.6\.|0\.5\.'; then _r="cr50"; fi
+        _o=$(gsctool -a -I 2>/dev/null)
+        if [ -n "$_o" ]; then
+            if echo "$_o" | grep -qw 'AllowUnverifiedRo'; then
+                _r="ti50"
+            else
+                _r="cr50"
+            fi
+        fi
     fi
     [ "$_r" = "unknown" ] && ls /dev/ti50* >/dev/null 2>&1 && _r="ti50"
     [ "$_r" = "unknown" ] && ls /dev/cr50* >/dev/null 2>&1 && _r="cr50"
@@ -179,7 +184,6 @@ cr50_ccd_gsctool() {
     printf "     Device may reboot - that's fine, come back to VT2.\n\n"
     printf "  %s4.%s Set flags:\n" "$BOLD" "$RST"
     printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n" "$DIM" "$RST"
-    printf "     %sgsctool -a -I AllowAnySlot:always%s\n\n" "$DIM" "$RST"
     printf "  %s5.%s Kill WP:\n" "$BOLD" "$RST"
     printf "     %sgsctool -a -w 0%s\n\n" "$DIM" "$RST"
     printf "  %s6.%s Verify:\n" "$BOLD" "$RST"
@@ -194,7 +198,7 @@ cr50_ccd_gsctool() {
         warn "wpsw_cur=${_wp}  WP on"
         printf "\n"
         if confirm "Run gsctool -a -o now?"; then
-            warn "Device may reboot. Re-run sp.sh after."
+            warn "Device may reboot. Re-run ScribbleProtection.postix.sh after."
             gsctool -a -o 2>&1 | while IFS= read -r l; do printf "  %s\n" "$l"; done
         fi
     fi
@@ -255,7 +259,6 @@ ti50_ccd_gsctool() {
     printf "     %sgsctool -a -I%s   look for State: Open\n\n" "$DIM" "$RST"
     printf "  %s6.%s Set flags:\n" "$BOLD" "$RST"
     printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n" "$DIM" "$RST"
-    printf "     %sgsctool -a -I AllowAnySlot:always%s\n\n" "$DIM" "$RST"
     printf "  %s7.%s Kill WP:\n" "$BOLD" "$RST"
     printf "     %sgsctool -a -w 0%s\n\n" "$DIM" "$RST"
     printf "  %s8.%s Verify:\n" "$BOLD" "$RST"
@@ -297,7 +300,6 @@ ti50_ccd_suzyq() {
     printf "  %s6.%s After open:\n" "$BOLD" "$RST"
     printf "     %swp disable atboot%s\n" "$DIM" "$RST"
     printf "     %sccd set AllowUnverifiedRo always%s\n" "$DIM" "$RST"
-    printf "     %sccd set AllowAnySlot always%s\n\n" "$DIM" "$RST"
     sep
     printf "\n"
     pause
@@ -370,9 +372,9 @@ startup_detect() {
     _wp=$(check_wp)
 
     if [ "$GSC_TYPE" = "cr50" ]; then
-        ok "CR50 (H1)"
+        ok "CR50"
     elif [ "$GSC_TYPE" = "ti50" ]; then
-        ok "TI50 (Dauntless)"
+        ok "TI50"
     else
         warn "GSC not detected - you'll pick manually"
     fi
@@ -410,8 +412,8 @@ main() {
             esac
         else
             numeric_menu "Scribble Protection  [select chip]" \
-                "CR50  (pre-2022, H1)" \
-                "TI50  (post-2022, Dauntless)" \
+                "CR50" \
+                "TI50" \
                 "Exit"
             case "$menu_choice" in
                 1) GSC_TYPE="cr50"; menu_cr50 ;;
