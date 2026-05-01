@@ -53,7 +53,7 @@ arrow_menu() {
  |____/|_|
 LOGO
         printf "${RST}"
-        printf "  ${DIM}Scribble Protection  |  WP Walkthrough${RST}\n"
+        printf "  ${DIM}Scribble Protection  |  WP Assistant${RST}\n"
         sep
         printf "\n  ${BOLD}${W}%s${RST}\n\n" "$_title"
         printf "  ${DIM}arrows to move, enter to select${RST}\n\n"
@@ -106,7 +106,7 @@ step_header() {
  |____/|_|
 LOGO
     printf "${RST}"
-    printf "  ${DIM}Scribble Protection  |  WP Walkthrough${RST}\n"
+    printf "  ${DIM}Scribble Protection  |  WP Assistant${RST}\n"
     sep
     printf "\n  ${BOLD}${W}%s${RST}\n\n" "$1"
     sep
@@ -194,14 +194,14 @@ cr50_ccd_suzyq() {
 
 # CR50 - CCD via gsctool screen
 cr50_ccd_gsctool() {
-    step_header "CR50 - CCD via gsctool (on-device)"
-    printf "  No cable needed. Uses the internal AP<->CR50 path.\n\n"
+    step_header "CR50 - CCD via gsctool"
+    printf "  No cable needed. Uses the internal AP to CR50 path.\n\n"
     printf "  ${BOLD}1.${RST} Check state:\n"
     printf "     ${DIM}gsctool -a -I${RST}\n\n"
     printf "  ${BOLD}2.${RST} Start CCD open:\n"
     printf "     ${DIM}gsctool -a -o${RST}\n\n"
     printf "  ${BOLD}3.${RST} Press power button when prompted. 5min window.\n"
-    printf "     Device may reboot - that's fine, come back to VT2.\n\n"
+    printf "     Device may reboot - that's not bad, come back to VT2.\n\n"
     printf "  ${BOLD}4.${RST} Set flags:\n"
     printf "     ${DIM}gsctool -a -I AllowUnverifiedRo:always${RST}\n"
     printf "     ${DIM}gsctool -a -I AllowAnySlot:always${RST}\n\n"
@@ -234,7 +234,7 @@ menu_cr50() {
         arrow_menu "CR50 - WP Method" \
             "Battery disconnect" \
             "CCD via SuzyQ (needs 2nd machine + cable)" \
-            "CCD via gsctool (on-device, no cable)" \
+            "CCD via gsctool" \
             "Check WP status" \
             "Back"
 
@@ -265,7 +265,7 @@ menu_cr50() {
 
 # TI50 - CCD via gsctool screen
 ti50_ccd_gsctool() {
-    step_header "TI50 - CCD via gsctool (on-device)"
+    step_header "TI50 - CCD via gsctool"
     printf "  Battery disconnect does NOT work on TI50.\n"
     printf "  CCD open via gsctool is the main path.\n\n"
     printf "  ${BOLD}1.${RST} Confirm TI50:\n"
@@ -356,9 +356,9 @@ ti50_verify() {
 # TI50 menu
 menu_ti50() {
     while true; do
-        arrow_menu "TI50 (Dauntless) - WP Method" \
-            "CCD via gsctool (on-device, no cable)" \
-            "CCD via SuzyQ (needs 2nd machine + cable)" \
+        arrow_menu "TI50 - WP Method" \
+            "CCD via gsctool" \
+            "CCD via SuzyQ (needs 2nd machine + SuzyQable)" \
             "Verify CCD + WP state" \
             "TI50 vs CR50 differences" \
             "Back"
@@ -399,7 +399,7 @@ startup_detect() {
     if [ "$GSC_TYPE" = "cr50" ]; then
         ok "CR50 (H1)"
     elif [ "$GSC_TYPE" = "ti50" ]; then
-        ok "TI50 (Dauntless)"
+        ok "TI50"
     else
         warn "GSC not detected - you'll pick manually"
     fi
@@ -438,8 +438,8 @@ main() {
             esac
         else
             arrow_menu "Scribble Protection  [select chip]" \
-                "CR50  (pre-2022, H1)" \
-                "TI50  (post-2022, Dauntless)" \
+                "CR50" \
+                "TI50" \
                 "Exit"
             case "$ARROW_RESULT" in
                 0) GSC_TYPE="cr50"; menu_cr50 ;;
