@@ -44,7 +44,7 @@ print_logo() {
  |____/|_|
 LOGO
     printf "%s" "$RST"
-    printf "  %sScribble Protection  |  WP Walkthrough%s\n" "$DIM" "$RST"
+    printf "  %sScribble Protection  |  WP Assistant%s\n" "$DIM" "$RST"
     sep
 }
 
@@ -169,8 +169,8 @@ cr50_ccd_suzyq() {
 
 # CR50 - CCD via gsctool screen
 cr50_ccd_gsctool() {
-    step_header "CR50 - CCD via gsctool (on-device)"
-    printf "  No cable needed. Uses the internal AP<->CR50 path.\n\n"
+    step_header "CR50 - CCD via gsctool"
+    printf "  No cable needed. Uses the internal AP to CR50 path.\n\n"
     printf "  %s1.%s Check state:\n" "$BOLD" "$RST"
     printf "     %sgsctool -a -I%s\n\n" "$DIM" "$RST"
     printf "  %s2.%s Start CCD open:\n" "$BOLD" "$RST"
@@ -225,7 +225,7 @@ menu_cr50() {
         numeric_menu "CR50 - WP Method" \
             "Battery disconnect" \
             "CCD via SuzyQ (needs 2nd machine + cable)" \
-            "CCD via gsctool (on-device, no cable)" \
+            "CCD via gsctool" \
             "Check WP status" \
             "Back"
         case "$menu_choice" in
@@ -240,7 +240,7 @@ menu_cr50() {
 
 # TI50 - CCD via gsctool screen
 ti50_ccd_gsctool() {
-    step_header "TI50 - CCD via gsctool (on-device)"
+    step_header "TI50 - CCD via gsctool"
     printf "  Battery disconnect does NOT work on TI50.\n"
     printf "  CCD open via gsctool is the main path.\n\n"
     printf "  %s1.%s Confirm TI50:\n" "$BOLD" "$RST"
@@ -345,8 +345,8 @@ ti50_vs_cr50() {
 # TI50 menu
 menu_ti50() {
     while :; do
-        numeric_menu "TI50 (Dauntless) - WP Method" \
-            "CCD via gsctool (on-device, no cable)" \
+        numeric_menu "TI50 - WP Method" \
+            "CCD via gsctool" \
             "CCD via SuzyQ (needs 2nd machine + cable)" \
             "Verify CCD + WP state" \
             "TI50 vs CR50 differences" \
