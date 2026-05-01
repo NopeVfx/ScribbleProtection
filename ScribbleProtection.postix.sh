@@ -275,7 +275,7 @@ ti50_ccd_gsctool() {
         warn "wpsw_cur=${_wp}  WP on"
         printf "\n"
         if confirm "Run gsctool -a -o now?"; then
-            warn "Device will reboot. Re-run sp.sh after."
+            warn "Device will reboot. Re-run ScribbleProtection.sh after."
             gsctool -a -o 2>&1 | while IFS= read -r l; do printf "  %s\n" "$l"; done
         fi
     fi
