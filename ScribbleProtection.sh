@@ -118,10 +118,16 @@ detect_gsc() {
     local _r="unknown"
     if command -v gsctool >/dev/null 2>&1; then
         local _o
-        _o=$(gsctool -a -v 2>/dev/null)
-        echo "$_o" | grep -qiE 'ti50|dauntless|0\.2\.' && _r="ti50"
-        echo "$_o" | grep -qiE 'cr50|h1|0\.6\.|0\.5\.' && _r="cr50"
+        _o=$(gsctool -a -I 2>/dev/null)
+        if [ -n "$_o" ]; then
+            if echo "$_o" | grep -qw 'AllowUnverifiedRo'; then
+                _r="ti50"
+            else
+                _r="cr50"
+            fi
+        fi
     fi
+    # Sysfs / devnode fallbacks for environments without working gsctool
     [ "$_r" = "unknown" ] && ls /dev/ti50* >/dev/null 2>&1 && _r="ti50"
     [ "$_r" = "unknown" ] && ls /dev/cr50* >/dev/null 2>&1 && _r="cr50"
     [ "$_r" = "unknown" ] && [ -d /sys/bus/platform/devices/ti50 ] && _r="ti50"
@@ -204,7 +210,6 @@ cr50_ccd_gsctool() {
     printf "     Device may reboot - that's not bad, come back to VT2.\n\n"
     printf "  ${BOLD}4.${RST} Set flags:\n"
     printf "     ${DIM}gsctool -a -I AllowUnverifiedRo:always${RST}\n"
-    printf "     ${DIM}gsctool -a -I AllowAnySlot:always${RST}\n\n"
     printf "  ${BOLD}5.${RST} Kill WP:\n"
     printf "     ${DIM}gsctool -a -w 0${RST}\n\n"
     printf "  ${BOLD}6.${RST} Verify:\n"
@@ -280,7 +285,6 @@ ti50_ccd_gsctool() {
     printf "     ${DIM}gsctool -a -I${RST}   look for State: Open\n\n"
     printf "  ${BOLD}6.${RST} Set flags:\n"
     printf "     ${DIM}gsctool -a -I AllowUnverifiedRo:always${RST}\n"
-    printf "     ${DIM}gsctool -a -I AllowAnySlot:always${RST}\n\n"
     printf "  ${BOLD}7.${RST} Kill WP:\n"
     printf "     ${DIM}gsctool -a -w 0${RST}\n\n"
     printf "  ${BOLD}8.${RST} Verify:\n"
@@ -323,7 +327,6 @@ ti50_ccd_suzyq() {
     printf "  ${BOLD}6.${RST} After open:\n"
     printf "     ${DIM}wp disable atboot${RST}\n"
     printf "     ${DIM}ccd set AllowUnverifiedRo always${RST}\n"
-    printf "     ${DIM}ccd set AllowAnySlot always${RST}\n\n"
     sep
     printf "\n"
     pause
